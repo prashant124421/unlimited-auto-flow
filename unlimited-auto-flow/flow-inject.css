@@ -1,0 +1,249 @@
+/* flow-inject.css — AUTOFLOW "Clean" pill + review modal injected on
+   flow.google.com. Matches the extension's theme (silver on near-black, ✦ brand).
+   All selectors are under the .tat- prefix so nothing collides with Flow's
+   Angular Material styles. */
+
+.tat-clean-pill,
+.tat-modal-backdrop {
+  --tat-bg: #101012;
+  --tat-bg2: #17171a;
+  --tat-bg3: #202024;
+  --tat-bg4: #2a2a30;
+  --tat-border: #34343a;
+  --tat-text: #e7e8ec;
+  --tat-muted: #8b8b94;
+  --tat-silver: #e7e8ec;
+  --tat-silver-bright: #f6f7f9;
+  --tat-ok: #a0c2b4;
+  --tat-danger: #d99488;
+  --tat-font: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+/* ---- tile pill ---- */
+
+.tat-clean-pill {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 3px 8px 3px 6px;
+  border: 1px solid var(--tat-border);
+  border-radius: 999px;
+  background: rgba(16, 16, 18, 0.78);
+  color: var(--tat-silver);
+  font: 600 10px/1 var(--tat-font);
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(3px);
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background 0.12s ease, border-color 0.12s ease, transform 0.12s ease;
+}
+.tat-clean-pill:hover { background: var(--tat-bg3); border-color: var(--tat-silver); }
+.tat-clean-pill:active { transform: scale(0.96); }
+.tat-clean-pill.tat-busy { opacity: 0.55; cursor: progress; pointer-events: none; }
+.tat-clean-ico { display: block; color: var(--tat-muted); }
+.tat-clean-pill:hover .tat-clean-ico { color: var(--tat-silver-bright); }
+.tat-clean-lbl { white-space: nowrap; }
+
+/* ---- review modal ---- */
+
+.tat-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.66);
+  padding: 24px;
+}
+.tat-modal-backdrop.tat-open { display: flex; }
+/* our explicit display rules (.tat-preview{display:block}, .tat-badge{display:inline-flex}…)
+   outrank the UA [hidden] rule, so make the hidden attribute win inside the modal */
+.tat-modal [hidden] { display: none !important; }
+
+.tat-modal {
+  box-sizing: border-box;
+  width: min(680px, 96vw);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--tat-bg2);
+  color: var(--tat-text);
+  border: 1px solid var(--tat-border);
+  border-radius: 14px;
+  box-shadow: 0 16px 56px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  font: 400 14px/1.4 var(--tat-font);
+}
+
+.tat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 15px;
+  border-bottom: 1px solid var(--tat-border);
+}
+.tat-headleft { display: inline-flex; align-items: center; gap: 10px; }
+.tat-title { font-weight: 700; font-size: 14px; color: var(--tat-silver-bright); }
+.tat-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(160, 194, 180, 0.16);
+  color: var(--tat-ok);
+  border: 1px solid rgba(160, 194, 180, 0.4);
+  font-weight: 600;
+  font-size: 11px;
+}
+.tat-x {
+  border: 0;
+  background: transparent;
+  color: var(--tat-muted);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.tat-x:hover { background: var(--tat-tint, rgba(231, 232, 236, 0.08)); color: var(--tat-text); }
+
+.tat-stage {
+  position: relative;
+  flex: 0 0 auto;
+  height: 52vh; /* fixed so the modal never resizes as the image loads/re-renders */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 15px;
+  border: 1px solid var(--tat-border);
+  border-radius: 10px;
+  background:
+    repeating-conic-gradient(#1c1c20 0% 25%, #141417 0% 50%) 50% / 22px 22px;
+  overflow: hidden;
+}
+.tat-preview { max-width: 100%; max-height: 100%; display: block; object-fit: contain; }
+.tat-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -16px 0 0 -16px; /* center without using transform (the animation owns transform) */
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid rgba(231, 232, 236, 0.18);
+  border-top-color: var(--tat-silver-bright);
+  animation: tat-spin 0.8s linear infinite;
+}
+@keyframes tat-spin { to { transform: rotate(360deg); } }
+
+.tat-note {
+  margin: 0 15px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--tat-bg3);
+  border-left: 3px solid var(--tat-danger);
+  color: var(--tat-muted);
+  font-size: 12.5px;
+}
+
+/* strength slider */
+.tat-strength { padding: 12px 15px 0; }
+.tat-strength-head { display: flex; align-items: baseline; justify-content: space-between; }
+.tat-strength-lbl { font-weight: 600; font-size: 12.5px; color: var(--tat-text); }
+.tat-strength-val { font-weight: 700; font-size: 12.5px; color: var(--tat-silver-bright); }
+.tat-strength-hint { margin-top: 4px; font-size: 11px; color: var(--tat-muted); }
+.tat-fill-row { display: flex; align-items: center; gap: 7px; margin-top: 9px; font-size: 12.5px; color: var(--tat-text); cursor: pointer; user-select: none; }
+.tat-fill-row input { accent-color: var(--tat-silver); width: 15px; height: 15px; cursor: pointer; }
+.tat-range:disabled { opacity: 0.4; cursor: default; }
+.tat-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  margin: 10px 0 2px;
+  border-radius: 999px;
+  background: var(--tat-bg4);
+  outline: none;
+  cursor: pointer;
+}
+.tat-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--tat-silver-bright);
+  border: 1px solid #0a0a0b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+.tat-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--tat-silver-bright);
+  border: 1px solid #0a0a0b;
+  cursor: pointer;
+}
+
+.tat-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 15px;
+}
+.tat-toggle {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--tat-bg);
+  border: 1px solid var(--tat-border);
+}
+.tat-seg {
+  border: 0;
+  background: transparent;
+  color: var(--tat-muted);
+  font: 600 12.5px/1 var(--tat-font);
+  padding: 7px 15px;
+  border-radius: 999px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.tat-seg.tat-on {
+  background: var(--tat-bg4);
+  color: var(--tat-silver-bright);
+  box-shadow: inset 0 0 0 1px var(--tat-border);
+}
+
+.tat-download {
+  border: 0;
+  background: linear-gradient(180deg, var(--tat-silver-bright), var(--tat-silver));
+  color: #161618;
+  font: 700 13.5px/1 var(--tat-font);
+  padding: 11px 22px;
+  border-radius: 10px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: filter 0.12s ease;
+}
+.tat-download:hover { filter: brightness(1.06); }
+.tat-download:disabled {
+  background: var(--tat-bg4);
+  color: var(--tat-muted);
+  cursor: default;
+  filter: none;
+}
